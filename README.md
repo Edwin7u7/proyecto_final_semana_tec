@@ -141,7 +141,7 @@ Instala la dependencia freegames ejecutando en tu terminal:
 
 ```bash
 pip install freegames
-
+```
 # Memoria
 Juego de memoria hecho con `turtle` y `freegames`. El jugador destapa casillas de dos en dos; si los números coinciden, el par queda descubierto y se va revelando la imagen del carro que está debajo.
 ## Requisitos
