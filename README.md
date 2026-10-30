@@ -1,9 +1,9 @@
 # proyecto_final_semana_tec
 Proyecto final  "Herramientas computacionales : El arte de la programación"
 
-## Edwin Arturo Salgado Santana
-## Hector Jesus Carrillo Cano
-## Andrés Urbina Pérez
+## Edwin Arturo Salgado Santana | A00842140
+## Hector Jesus Carrillo Cano | A01708470
+## Andrés Urbina Pérez | A01707302
 
 
 
