@@ -17,7 +17,7 @@ from freegames import floor, vector
 state = {'score': 0}
 
 # Instancias de Turtle ocultas:
-# 'path' se usa para dibujar el mapa/tablero
+# 'path' se usa para dibujar el mapa/tablero y el alimento
 # 'writer' se usa para renderizar el puntaje en la pantalla
 path = Turtle(visible=False)
 writer = Turtle(visible=False)
@@ -39,7 +39,7 @@ ghosts = [
 # fmt: off
 # Matriz del tablero de 20x20 casillas (400 elementos en total)
 # 0 = Pared sólida (bloque gris/azul)
-# 1 = Pasillo con moneda (punto blanco)
+# 1 = Pasillo con alimento (cuadrado verde)
 # 2 = Pasillo ya comido / despejado
 tiles = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -66,8 +66,8 @@ tiles = [
 # fmt: on
 
 
-def square(x, y):
-    """Dibuja un cuadrado relleno de 20x20 píxeles en la posición (x, y)."""
+def square(x, y, size=20):
+    """Dibuja un cuadrado relleno de un tamaño determinado en la posición (x, y)."""
     path.up()
     path.goto(x, y)
     path.down()
@@ -75,7 +75,7 @@ def square(x, y):
 
     # Dibuja los cuatro lados del cuadrado
     for count in range(4):
-        path.forward(20)
+        path.forward(size)
         path.left(90)
 
     path.end_fill()
@@ -108,9 +108,8 @@ def valid(point):
 
 
 def world():
-    """Dibuja la estructura inicial del tablero y las monedas de la lista 'tiles'."""
+    """Dibuja la estructura inicial del tablero y el nuevo alimento (cuadrados verdes)."""
     bgcolor('black')
-    path.color('blue')
 
     # Recorre los 400 elementos del tablero
     for index in range(len(tiles)):
@@ -120,13 +119,15 @@ def world():
             # Convierte el índice de la lista a coordenadas de pantalla (x, y)
             x = (index % 20) * 20 - 200
             y = 180 - (index // 20) * 20
-            square(x, y)
+            
+            # Dibuja la pared/pasillo en azul
+            path.color('blue')
+            square(x, y, 20)
 
-            # Dibuja la moneda (punto blanco) en el centro del cuadro
+            # Dibuja el alimento: un cuadrado pequeño de color verde (tamaño 6x6 píxeles)
             if tile == 1:
-                path.up()
-                path.goto(x + 10, y + 10)
-                path.dot(2, 'white')
+                path.color('green')
+                square(x + 7, y + 7, 6)
 
 
 def move():
@@ -143,13 +144,14 @@ def move():
 
     index = offset(pacman)
 
-    # Si Pacman está sobre una moneda (1), la come y suma puntos
+    # Si Pacman está sobre un alimento (1), lo come y suma puntos
     if tiles[index] == 1:
         tiles[index] = 2  # Cambia a piso comido
         state['score'] += 1
         x = (index % 20) * 20 - 200
         y = 180 - (index // 20) * 20
-        square(x, y)  # Redibuja el cuadro sin la moneda
+        path.color('blue')
+        square(x, y, 20)  # Redibuja el cuadro azul sin el alimento verde
 
     # Dibuja a Pacman (punto amarillo)
     up()
