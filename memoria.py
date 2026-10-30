@@ -3,6 +3,7 @@
 Cambios añadidos:
 1. Contar y desplegar el número de pares descubiertos.
 2. Detectar cuando todos los cuadros se han destapado.
+3. Cambiar el número de casillas del tablero.
 """
 
 # Importamos lo necesario:
@@ -14,11 +15,27 @@ from turtle import *
 
 from freegames import path
 
+# ---------- Configuración del tablero ----------
+# SIZE es el número de casillas por lado (el tablero es de SIZE x SIZE).
+# Cambia este número para hacer el tablero más grande o más chico.
+# Debe ser un número PAR (2, 4, 6, 8...) para que todas las fichas tengan pareja.
+SIZE = 4
+
+# Tamaño de cada casilla en pixeles
+TILE = 50
+
+# Total de casillas y total de pares que hay en el tablero
+TOTAL = SIZE * SIZE
+PAIRS = TOTAL // 2
+
+# Mitad del ancho del tablero; sirve para centrarlo en la pantalla
+HALF = SIZE * TILE // 2
+
 # Imagen que aparece debajo de las fichas
 car = path('car.gif')
 
-# Lista de fichas: los números del 0 al 31, cada uno repetido dos veces (64 fichas)
-tiles = list(range(32)) * 2
+# Lista de fichas: cada número aparece dos veces (para formar pares)
+tiles = list(range(PAIRS)) * 2
 
 # Estado del juego:
 # - 'mark': la ficha que el jugador tocó primero (None si no hay ninguna)
@@ -28,7 +45,7 @@ state = {'mark': None, 'pairs': 0, 'won': False}
 
 # Indica si cada ficha está tapada (True) o descubierta (False)
 # Al inicio todas están tapadas
-hide = [True] * 64
+hide = [True] * TOTAL
 
 
 def square(x, y):
@@ -38,24 +55,24 @@ def square(x, y):
     down()          # Baja el lápiz para empezar a dibujar
     color('black', 'white')  # Borde negro, relleno blanco
     begin_fill()
-    # Dibuja los 4 lados del cuadro (cada lado mide 50)
+    # Dibuja los 4 lados del cuadro
     for count in range(4):
-        forward(50)
+        forward(TILE)
         left(90)
     end_fill()
 
 
 def index(x, y):
-    """Convierte las coordenadas de un clic (x, y) en el número de ficha (0 a 63)."""
-    # El tablero va de -200 a 200; cada ficha mide 50 y hay 8 por fila
-    return int((x + 200) // 50 + ((y + 200) // 50) * 8)
+    """Convierte las coordenadas de un clic (x, y) en el número de ficha."""
+    # El tablero va de -HALF a HALF; hay SIZE fichas por fila
+    return int((x + HALF) // TILE + ((y + HALF) // TILE) * SIZE)
 
 
 def xy(count):
     """Convierte el número de ficha en sus coordenadas (x, y) en pantalla."""
-    # count % 8  -> columna de la ficha
-    # count // 8 -> fila de la ficha
-    return (count % 8) * 50 - 200, (count // 8) * 50 - 200
+    # count % SIZE  -> columna de la ficha
+    # count // SIZE -> fila de la ficha
+    return (count % SIZE) * TILE - HALF, (count // SIZE) * TILE - HALF
 
 
 def all_revealed():
@@ -72,7 +89,7 @@ def tap(x, y):
         return
 
     # Si el clic fue fuera del tablero, no hacemos nada
-    if not (-200 <= x < 200 and -200 <= y < 200):
+    if not (-HALF <= x < HALF and -HALF <= y < HALF):
         return
 
     # Averiguamos qué ficha se tocó
@@ -118,7 +135,7 @@ def draw():
     stamp()
 
     # Dibuja un cuadro encima de cada ficha que siga tapada
-    for count in range(64):
+    for count in range(TOTAL):
         if hide[count]:
             x, y = xy(count)
             square(x, y)
@@ -135,9 +152,9 @@ def draw():
 
     # Muestra el contador de pares arriba del tablero
     up()
-    goto(-200, 205)
+    goto(-HALF, HALF + 5)
     color('black')
-    write(f"Pares descubiertos: {state['pairs']} / 32",
+    write(f"Pares descubiertos: {state['pairs']} / {PAIRS}",
           font=('Arial', 14, 'normal'))
 
     # Si ya se destaparon todos los cuadros, mostramos un mensaje de victoria
@@ -153,7 +170,11 @@ def draw():
 
 # ---------- Inicio del juego ----------
 shuffle(tiles)               # Revuelve las fichas
-setup(420, 480, 370, 0)      # Tamaño de la ventana (más alta para que quepa el contador)
+
+# El tamaño de la ventana se ajusta al tamaño del tablero
+# (+20 de margen a los lados y +80 de alto para que quepa el contador)
+setup(SIZE * TILE + 20, SIZE * TILE + 80, 370, 0)
+
 addshape(car)                # Registra la imagen del carro
 hideturtle()                 # Oculta la tortuga (el cursor que dibuja)
 tracer(False)                # Desactiva la animación para dibujar más rápido
