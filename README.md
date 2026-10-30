@@ -3,11 +3,102 @@ Proyecto final  "Herramientas computacionales : El arte de la programación"
 
 ## Edwin Arturo Salgado Santana
 ## Hector Jesus Carrillo Cano
-##
+## Andrés Urbina Pérez
 
 
 
 # Juegos
+# Tictactoe
+# Tic Tac Toe (modificado)
+
+Juego de gato (Tic Tac Toe) para dos jugadores hecho con `turtle` y la librería `freegames`. Este proyecto parte del código original `tictactoe.py` de *freegames* y le agrega tres modificaciones.
+
+## Requisitos y ejecución
+
+- Python 3
+- Librería `freegames`
+
+```bash
+pip install freegames
+python tictactoe_3.py
+```
+
+Se juega con clics del mouse: el jugador X empieza y luego se alternan los turnos.
+
+## Archivos
+
+| Archivo | Contenido |
+|---|---|
+| `tictactoe.py` | Código original, sin cambios |
+| `tictactoe_1.py` | Modificación 1 |
+| `tictactoe_2.py` | Modificaciones 1 y 2 |
+| `tictactoe_3.py` | Modificaciones 1, 2 y 3 (**versión final**) |
+
+Cada archivo incluye las modificaciones anteriores. Los comentarios `# MODIFICACIÓN n` en el código indican qué se agregó o cambió.
+
+---
+
+## Modificación 1: tamaño, color y centrado de X y O
+
+**Problema en el original:** la X y la O se dibujaban con el grosor y color por defecto, la X ocupaba toda la casilla (de esquina a esquina) y la O quedaba desplazada.
+
+**Cambios:**
+
+- **Color:** la X es azul (`color('blue')`) y la O es roja (`color('red')`).
+- **Grosor:** `width(8)` en ambas funciones.
+- **Tamaño:** en la X, `d = 40` es la mitad de la longitud de cada trazo. En la O, `r = 48` es el radio del círculo.
+- **Centrado:** `floor()` devuelve la esquina inferior izquierda de la casilla, así que se suma `66.5` (la mitad de 133) para obtener el centro `(cx, cy)`. Los trazos se dibujan alrededor de ese centro.
+- **Detalle de la O:** `circle()` dibuja con el centro `r` unidades *arriba* de la tortuga, por eso la tortuga se coloca en `(cx, cy - r)` antes de dibujar.
+
+---
+
+## Modificación 2: validar casilla ocupada
+
+**Problema en el original:** se podía tocar una casilla ya usada y el símbolo se dibujaba encima del anterior, además de cambiar el turno.
+
+**Cambios:**
+
+- **Registro de casillas:** `ocupadas` guarda la esquina `(x, y)` de cada casilla usada.
+- **Validación en `tap()`:** si la casilla ya está en `ocupadas`, se muestra "¡Casilla ocupada! Elige otra.", no se dibuja nada y el turno **no** cambia.
+- **Clics fuera del tablero:** se ignoran.
+- **Mensajes en pantalla:** la tortuga auxiliar `mensaje` y la función `escribir()` muestran texto debajo del tablero, incluido "Turno de X/O". Por eso la ventana pasó de 420×420 a 420×470.
+
+---
+
+## Modificación 3: ganador o empate
+
+**Problema en el original:** el juego nunca terminaba ni indicaba quién ganaba.
+
+**Cambios:**
+
+- **Combinaciones ganadoras:** `GANADORAS` contiene las 8 combinaciones posibles (3 filas, 3 columnas y 2 diagonales), construidas con `COORDS = [-200, -67, 66]`.
+- **Quién ocupa cada casilla:** `ocupadas` pasó de conjunto a diccionario `{(x, y): 'X' u 'O'}`. La validación de la modificación 2 sigue igual, pero ahora se sabe qué símbolo hay en cada casilla.
+- **Detección de ganador:** `ganador()` busca una combinación con tres símbolos iguales. Si la encuentra, se traza una línea verde sobre las tres casillas y se muestra "¡Ganó X!" o "¡Ganó O!".
+- **Empate:** si hay 9 casillas ocupadas y nadie ganó, se muestra "¡Empate!".
+- **Fin del juego:** `state['over']` pasa a `True` y `tap()` ignora los clics siguientes.
+- **Corrección adicional:** un clic en el borde derecho o superior del tablero (coordenadas entre 199 y 200) caía en una cuarta casilla inexistente. Se corrigió con `min(floor(x), 66)`.
+
+---
+
+## Cómo funciona el juego (resumen)
+
+1. `tap(x, y)` se ejecuta con cada clic.
+2. Si el juego terminó o el clic está fuera del tablero, no hace nada.
+3. Convierte el clic en la casilla correspondiente con `floor()`.
+4. Si la casilla está ocupada, avisa y termina.
+5. Dibuja el símbolo del jugador actual y lo registra en `ocupadas`.
+6. Revisa si hay ganador o empate; si no, cambia el turno.
+
+## Relación con los ejercicios del código original
+
+El archivo original proponía cuatro ejercicios. Este proyecto resuelve los tres primeros:
+
+1. Dar a la X y la O otro color y grosor → Modificación 1.
+2. Qué pasa al tocar una casilla ocupada → Modificación 2.
+3. Detectar cuándo alguien gana → Modificación 3.
+
+El cuarto (crear un jugador controlado por la computadora) no se implementó.
+
 # Pacman
 Una versión modificada del clásico juego Pacman desarrollado en Python utilizando la librería freegames e interfaz gráfica turtle.
 
@@ -50,6 +141,7 @@ Instala la dependencia freegames ejecutando en tu terminal:
 
 ```bash
 pip install freegames
+
 # Memoria
 Juego de memoria hecho con `turtle` y `freegames`. El jugador destapa casillas de dos en dos; si los números coinciden, el par queda descubierto y se va revelando la imagen del carro que está debajo.
 ## Requisitos
