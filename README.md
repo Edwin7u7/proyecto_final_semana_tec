@@ -2,12 +2,54 @@
 Proyecto final  "Herramientas computacionales : El arte de la programación"
 
 ## Edwin Arturo Salgado Santana
-##
+## Hector Jesus Carrillo Cano
 ##
 
 
 
 # Juegos
+# Pacman
+Una versión modificada del clásico juego Pacman desarrollado en Python utilizando la librería freegames e interfaz gráfica turtle.
+
+---
+
+## Modificaciones Realizadas
+
+Se aplicaron diversos cambios sobre la base original del juego para personalizar el mapa, los gráficos y ajustar la dificultad:
+
+### 1. Rediseño del Tablero (tiles)
+- Se reestructuró la matriz global de 20x20 casillas para crear nuevos pasillos y bloques de paredes.
+- Se mantuvieron los bordes cerrados (0) para evitar que las entidades salgan de la pantalla.
+- Se aseguraron los puntos de aparición iniciales para Pacman y los fantasmas sobre rutas transitables (1).
+
+### 2. Cambio de Forma y Color del Alimento
+- Forma: Se sustituyó el punto circular tradicional (dot) por un cuadrado relleno de 6x6 píxeles mediante una función square parametrizada.
+- Color: Se cambió el color blanco original por un verde brillante ('green') para darle un estilo visual distinto.
+- Lógica de recolección: Se actualizó el evento de colisión para que, al comer un alimento, se limpie el área redibujando la celda con el color del pasillo ('blue').
+
+### 3. Incremento en la Velocidad de los Fantasmas
+- Mayor paso de movimiento: Se introdujo la variable global GHOST_SPEED = 10, duplicando la distancia de desplazamiento por paso respecto a los 5 píxeles originales.
+- Temporizador acelerado: Se redujo el tiempo de actualización del ciclo de juego en ontimer(move, 50), pasando de 100 ms a 50 ms entre fotogramas.
+- Manejo de rebotes: Al chocar contra paredes, la reorientación aleatoria de cada fantasma asigna direcciones acordes a su nueva velocidad.
+
+### 4. Comentarios y Documentación en Código
+- Se añadieron comentarios explicativos paso a paso a lo largo de todo el script en español, detallando:
+  - Estructuras de datos (state, tiles, ghosts).
+  - Lógica matemática de conversión de coordenadas (offset).
+  - Funciones de validación de colisiones y bucle principal de juego.
+
+---
+
+## Requisitos e Instalación
+
+### Prerrequisitos
+- Python 3.x instalado.
+
+### Librerías requeridas
+Instala la dependencia freegames ejecutando en tu terminal:
+
+```bash
+pip install freegames
 # Memoria
 Juego de memoria hecho con `turtle` y `freegames`. El jugador destapa casillas de dos en dos; si los números coinciden, el par queda descubierto y se va revelando la imagen del carro que está debajo.
 ## Requisitos
