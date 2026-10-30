@@ -28,12 +28,15 @@ aim = vector(5, 0)
 # Posición inicial de Pacman en el sistema de coordenadas
 pacman = vector(-40, -80)
 
-# Lista con los fantasmas: cada elemento contiene [Posición Inicial, Vector de Dirección]
+# Velocidad personalizada para los fantasmas (ejemplo: 10 unidades por paso en lugar de 5)
+GHOST_SPEED = 10
+
+# Lista con los fantasmas: cada elemento contiene [Posición Inicial, Vector de Dirección con velocidad incrementada]
 ghosts = [
-    [vector(-180, 160), vector(5, 0)],
-    [vector(-180, -160), vector(0, 5)],
-    [vector(100, 160), vector(0, -5)],
-    [vector(100, -160), vector(-5, 0)],
+    [vector(-180, 160), vector(GHOST_SPEED, 0)],
+    [vector(-180, -160), vector(0, GHOST_SPEED)],
+    [vector(100, 160), vector(0, -GHOST_SPEED)],
+    [vector(100, -160), vector(-GHOST_SPEED, 0)],
 ]
 
 # fmt: off
@@ -158,17 +161,17 @@ def move():
     goto(pacman.x + 10, pacman.y + 10)
     dot(20, 'yellow')
 
-    # Mueve cada uno de los fantasmas
+    # Mueve cada uno de los fantasmas con velocidad incrementada
     for point, course in ghosts:
         if valid(point + course):
             point.move(course)
         else:
-            # Si choca contra una pared, elige una dirección al azar
+            # Si choca contra una pared, elige una nueva dirección con la velocidad configurada (GHOST_SPEED)
             options = [
-                vector(5, 0),
-                vector(-5, 0),
-                vector(0, 5),
-                vector(0, -5),
+                vector(GHOST_SPEED, 0),
+                vector(-GHOST_SPEED, 0),
+                vector(0, GHOST_SPEED),
+                vector(0, -GHOST_SPEED),
             ]
             plan = choice(options)
             course.x = plan.x
@@ -186,8 +189,8 @@ def move():
         if abs(pacman - point) < 20:
             return  # Termina el juego si un fantasma atrapa a Pacman
 
-    # Programa la ejecución del siguiente fotograma en 100 milisegundos
-    ontimer(move, 100)
+    # Programa la ejecución del siguiente fotograma en 50 milisegundos (más rápido que los 100ms originales)
+    ontimer(move, 50)
 
 
 def change(x, y):
