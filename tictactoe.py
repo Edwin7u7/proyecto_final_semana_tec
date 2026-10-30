@@ -1,11 +1,6 @@
-"""Tic Tac Toe
+"""Tic Tac Toe - Modificación 1
 
-Exercises
-
-1. Give the X and O a different color and width.
-2. What happens when someone taps a taken spot?
-3. How would you detect when someone has won?
-4. How could you create a computer player?
+Cambiar tamaño y color de la X y la O, y centrarlas en la casilla.
 """
 
 from turtle import *
@@ -22,17 +17,37 @@ def grid():
 
 
 def drawx(x, y):
-    """Draw X player."""
-    line(x, y, x + 133, y + 133)
-    line(x, y + 133, x + 133, y)
+    """Draw X player centrada en la casilla, azul y gruesa."""
+    color('blue')   # color de la X
+    width(8)        # grosor de la X
+
+    # (x, y) es la esquina inferior izquierda de la casilla,
+    # así que el centro está medio cuadro (66.5) hacia arriba y a la derecha.
+    cx = x + 66.5
+    cy = y + 66.5
+    d = 40          # tamaño: mitad de la longitud de cada trazo
+
+    line(cx - d, cy - d, cx + d, cy + d)
+    line(cx - d, cy + d, cx + d, cy - d)
 
 
 def drawo(x, y):
-    """Draw O player."""
+    """Draw O player centrada en la casilla, roja y gruesa."""
+    color('red')    # color de la O
+    width(8)        # grosor de la O
+
+    cx = x + 66.5
+    cy = y + 66.5
+    r = 48          # tamaño: radio del círculo
+
     up()
-    goto(x + 67, y + 5)
+    setheading(0)
+    # circle() dibuja el círculo con su centro r unidades ARRIBA de la
+    # tortuga, por eso se baja r unidades desde el centro de la casilla.
+    goto(cx, cy - r)
     down()
-    circle(62)
+    circle(r)
+    up()
 
 
 def floor(value):
@@ -62,4 +77,3 @@ grid()
 update()
 onscreenclick(tap)
 done()
-
