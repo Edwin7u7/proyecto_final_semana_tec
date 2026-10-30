@@ -1,6 +1,8 @@
 """Memory, juego de memoria con pares de números.
 
-Cambio añadido: contar y desplegar el número de pares descubiertos.
+Cambios añadidos:
+1. Contar y desplegar el número de pares descubiertos.
+2. Detectar cuando todos los cuadros se han destapado.
 """
 
 # Importamos lo necesario:
@@ -21,7 +23,8 @@ tiles = list(range(32)) * 2
 # Estado del juego:
 # - 'mark': la ficha que el jugador tocó primero (None si no hay ninguna)
 # - 'pairs': cuántos pares lleva descubiertos
-state = {'mark': None, 'pairs': 0}
+# - 'won': si ya se destaparon todos los cuadros (True) o no (False)
+state = {'mark': None, 'pairs': 0, 'won': False}
 
 # Indica si cada ficha está tapada (True) o descubierta (False)
 # Al inicio todas están tapadas
@@ -55,8 +58,19 @@ def xy(count):
     return (count % 8) * 50 - 200, (count // 8) * 50 - 200
 
 
+def all_revealed():
+    """Regresa True si ya no queda ningún cuadro tapado."""
+    # hide tiene True en los cuadros tapados.
+    # Si ninguno es True, significa que todos se destaparon.
+    return not any(hide)
+
+
 def tap(x, y):
     """Se ejecuta cada vez que el jugador hace clic."""
+    # Si el juego ya terminó, ignoramos los clics
+    if state['won']:
+        return
+
     # Si el clic fue fuera del tablero, no hacemos nada
     if not (-200 <= x < 200 and -200 <= y < 200):
         return
@@ -87,6 +101,11 @@ def tap(x, y):
         # Sumamos 1 al contador de pares y lo mostramos en la consola
         state['pairs'] += 1
         print('Pares descubiertos:', state['pairs'])
+
+        # Revisamos si con este par ya se destaparon todos los cuadros
+        if all_revealed():
+            state['won'] = True
+            print('¡Ganaste! Destapaste todos los cuadros.')
 
 
 def draw():
@@ -120,6 +139,13 @@ def draw():
     color('black')
     write(f"Pares descubiertos: {state['pairs']} / 32",
           font=('Arial', 14, 'normal'))
+
+    # Si ya se destaparon todos los cuadros, mostramos un mensaje de victoria
+    if state['won']:
+        up()
+        goto(0, 0)
+        color('red')
+        write('¡Ganaste!', align='center', font=('Arial', 40, 'bold'))
 
     update()               # Refresca la pantalla
     ontimer(draw, 100)     # Vuelve a dibujar cada 100 milisegundos
